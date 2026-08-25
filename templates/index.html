@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Dataset Visualizer</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <h1>Dataset Visualizer</h1>
+
+    <div class="main_container">
+        <div class="sub_container" name="dataset">
+            Hier wird mindestens mal angezeigt, welches Dataset in Verwendung ist, bei mehreren ggf. Auswahlmöglichkeit<br>
+            Ggf. auch die Möglichkeit, ein neues Dataset hochzuladen
+        </div>
+        <div class="sub_container" name="visual_type">
+            Hier soll es eine Option geben, welche Art von Visualisierung angezeigt werden soll (z.B. Balkendiagramm, Liniendiagramm, etc.)<br>
+            Die Liste wird hard-coded basierend darauf, was die Funktionen entsprechend anzeigen können.<br>
+            Ggf. mit kleinen Bildchen.
+        </div>
+        <div class="sub_container" name="columns">
+            Hier soll es eine Möglichkeit geben, die Spalten auszuwählen, die in der Visualisierung angezeigt werden sollen.<br>
+            Die Spalten werden basierend auf einer Funktion angeboten, die das Datenset analysiert und die Spaltennamen zurückgibt.<br>
+            Ggf. mit Ausgabe des Typus.
+        </div>
+        <div class="sub_container" name="filters">
+            Hier soll es eine Möglichkeit geben, Filter auf die Daten anzuwenden, die in der Visualisierung angezeigt werden sollen.<br>
+            Die Filter werden basierend auf einer Funktion angeboten, die das Datenset analysiert und die Inhalte der Spalten zurückgibt.<br>
+            Basierend auf den Optionen dann als Data-Range, Dropdown, Multi-Select, etc. darstellen.<br>
+        </div>
+        <div class="sub_container" name="graph">
+            Hier sitzt das Herzstück: der Graph, der basierend auf den vorherigen Einstellungen erstellt wird.<br>
+        </div>
+    </div>
+
+</body>
+
+</html>

@@ -1,0 +1,54 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 10px;
+
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    color: #222;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.main_container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.sub_container {
+    padding: 15px;
+
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* Der Graph soll über die gesamte Breite gehen */
+.sub_container[name="graph"] {
+    grid-column: 1 / -1;
+    min-height: 400px;
+}
+
+/* Dataset und Visualisierung etwas hervorheben */
+.sub_container[name="dataset"],
+.sub_container[name="visual_type"] {
+    min-height: 150px;
+}
+
+/* Spalten und Filter */
+.sub_container[name="columns"],
+.sub_container[name="filters"] {
+    min-height: 200px;
+}
