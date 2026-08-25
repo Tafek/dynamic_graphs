@@ -5,9 +5,8 @@
 body {
     margin: 0;
     padding: 10px;
-
     font-family: Arial, sans-serif;
-    background-color: #f2f2f2;
+    background-color: #454545;
     color: #222;
 }
 
@@ -28,7 +27,7 @@ h1 {
 .sub_container {
     padding: 15px;
 
-    background-color: white;
+    background-color: #959595;
     border: 1px solid #ccc;
     border-radius: 8px;
 
@@ -51,4 +50,18 @@ h1 {
 .sub_container[name="columns"],
 .sub_container[name="filters"] {
     min-height: 200px;
+}
+
+
+.col_selector {
+    display: inline-grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 600px;
+    margin: 0 auto;
+    column-gap: 15px;
+    row-gap: 5px;
+}
+
+.selector_dropdown {
+    background-color: #c1c1c1;
 }

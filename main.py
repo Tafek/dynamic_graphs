@@ -8,7 +8,7 @@ app = Flask(__name__)
 @app.route("/", methods=["GET", "POST"])
 def index():
 
-    if request.method == "POST":
+    if request.method == "POST" and "dataset" in request.form:
         dropdown_html = get_data_dropdown(request.form["dataset"])
         spec_dataset = request.form["dataset"]
         columns_html = get_cols(spec_dataset)

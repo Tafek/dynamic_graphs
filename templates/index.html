@@ -19,7 +19,7 @@
                 <p>{{ message_no_datasets }}</p>
             {% else %}
                 <form method="POST" action="/">
-                    <select name="dataset" onchange="this.form.submit()">
+                    <select name="dataset" onchange="this.form.submit()" class="selector_dropdown">
                         {{ dropdown_html | safe }}
                     </select>
                 </form>
