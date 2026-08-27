@@ -1,15 +1,11 @@
 from flask import Flask, render_template, request
+
+from functions.get_cols import get_cols, get_dataframe
 from functions.get_data import get_data_dropdown
-from functions.get_cols import get_cols
-from functions.get_cols import get_dataframe
-from functions.test_function import display_head
 from functions.show_graph import show_graph
-
-import config
-
+from functions.test_function import display_head
 
 app = Flask(__name__)
-
 
 @app.route("/", methods=["GET", "POST"])
 def index():
@@ -53,26 +49,31 @@ def index():
     # --------------------------------
     # Generate Graph
     # --------------------------------
-
+    generated_graph = '<div class="graph_container_full">'
     if spec_dataset and visual_type:
-
-        if visual_type in ["line", "hist", "bar", "pie"] and (len(columns_2) == 0 or len(columns_1) == 0):
-            generated_graph = "<p>For this visualization, two columns must be selected.</p>"
+        generated_graph += '<div class="graph_container_left">'
+        if visual_type in ["line", "scatter", "bar", "pie","boxplot"] and (len(columns_2) == 0 or len(columns_1) == 0):
+            generated_graph += "<p>For this visualization, two columns must be selected.</p>"
             # Fallback to display the head of the dataset if no graph is shown
             generated_graph += display_head(get_dataframe(f"data/{spec_dataset}"))
 
-        elif visual_type in ["pie","scatter"] and len(columns_1) < 1:
-            generated_graph = "<p>Please select at least one column.</p>"
+        elif visual_type in ["hist"] and len(columns_1) < 1:
+            generated_graph += "<p>Please select at least one column.</p>"
             # Fallback to display the head of the dataset if no graph is shown
             generated_graph += display_head(get_dataframe(f"data/{spec_dataset}"))
 
         else:
-            generated_graph = show_graph(
-                type=visual_type,
-                cols_1=columns_1,
-                cols_2=columns_2,
-                df=get_dataframe(f"data/{spec_dataset}")
-            )
+            generated_graph += show_graph(  type=visual_type,
+                                            cols_1=columns_1,
+                                            cols_2=columns_2,
+                                            df=get_dataframe(f"data/{spec_dataset}"))
+            generated_graph += "</div>"
+            #generated_graph += show_graph_settings( type=visual_type,
+            #                                        cols_1=columns_1,
+            #                                        cols_2=columns_2,
+            #                                        df=get_dataframe(f"data/{spec_dataset}"))
+            generated_graph += '<div class="graph_container_right">Placeholder for further Visual Settings (Avg. etc.)</div>'
+        generated_graph += '</div>'
     # --------------------------------
     # No Datasets Available?
     # --------------------------------

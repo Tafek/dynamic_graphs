@@ -4,10 +4,9 @@ import base64
 import io
 
 import matplotlib
-matplotlib.use("Agg")
-
 import matplotlib.pyplot as plt
-import pandas as pd
+
+matplotlib.use("Agg")
 
 
 def show_graph(type="line", cols_1=None, cols_2=None, filters=None, settings=None, df=None, method="mean"):

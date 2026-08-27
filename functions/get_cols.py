@@ -1,6 +1,8 @@
-from functions.get_data import get_data
-import pandas as pd
 import csv
+
+import pandas as pd
+
+from functions.get_data import get_data
 
 
 def get_separator(file):
@@ -49,9 +51,8 @@ def clean_df(df):
             # Wenige verschiedene Werte
             elif len(unique_values) <= 5:
                 df[col] = df[col].astype("category")
-        elif pd.api.types.is_float_dtype(df[col]):
-            if df[col].dropna().apply(float.is_integer).all():
-                df[col] = df[col].astype(int)
+        elif pd.api.types.is_float_dtype(df[col]) and df[col].dropna().apply(float.is_integer).all():
+            df[col] = df[col].astype(int)
     return df
 
 
@@ -82,15 +83,15 @@ def get_col_type(df, col):
 def get_aggregation_options(graph_type):
     # Für das Pie-Chart machen manche Aggregationen nur bedingt viel Sinn, aber theoretisch kann man auch die Minimalwerte zweier Kategorien in Verhältnis setzen wollen
     if graph_type in ["bar","line","pie"]:
-        aggregation_html =  'Please choose an aggregation method:<br>' \
-                            f'<select name="aggregation">' \
-                            f'<option value="count">Count</option>' \
-                            f'<option value="sum">Sum</option>' \
-                            f'<option value="mean">Mean</option>' \
-                            f'<option value="median">Median</option>' \
-                            f'<option value="max">Max</option>' \
-                            f'<option value="min">Min</option>' \
-                            f'</select>'
+        aggregation_html =  'Please select an aggregation method:<br>' \
+                            '<select name="aggregation">' \
+                            '<option value="count">Count</option>' \
+                            '<option value="sum">Sum</option>' \
+                            '<option value="mean">Mean</option>' \
+                            '<option value="median">Median</option>' \
+                            '<option value="max">Max</option>' \
+                            '<option value="min">Min</option>' \
+                            '</select>'
     else:
         aggregation_html = ""
     
@@ -99,17 +100,9 @@ def get_aggregation_options(graph_type):
 def get_cols(spec_dataset=None, graph_type="line", cols_1=None, cols_2=None):
     import config
     datasets = get_data()
-    single_x_col_types_obligatory = config.single_x_col_types_obligatory
-    single_x_col_types_optional   = config.single_x_col_types_optional
-    multi_y_col_types_optional  = config.multi_y_col_types_optional
+    no_x_col_types = config.no_x_col_types
 
-
-    # ^ Da is grad Legacy Code den ich aufräumen muss.
-    if graph_type not in single_x_col_types_obligatory:
-        additional_info = "<p>Please select columns for the Y-axis.</p>"
-    else:
-        additional_info = "<p>Please select a column for the X-axis.</p>"
-    col_selector_html = f"{additional_info}<div class='col_selector'><div class='col_item_container'>"
+    col_selector_html = "<p>Please select columns for the Y-axis.</p><div class='col_selector'><div class='col_item_container'>"
 
     if spec_dataset is None:
         if datasets:
@@ -124,25 +117,33 @@ def get_cols(spec_dataset=None, graph_type="line", cols_1=None, cols_2=None):
     aggregation_options = get_aggregation_options(graph_type)
     for col in df.columns:
         col_selector_html += f'<div class="col_item">' \
-                            f'<div class="col_checkbox"><input type="checkbox" name="columns_1" value="{col}" {"checked" if cols_1 and col in cols_1 else ""}>{col}</div>' \
+                            f'<div class="col_checkbox"><input type="checkbox" onchange="this.form.submit()" name="columns_1" value="{col}" {"checked" if cols_1 and col in cols_1 else ""}>{col}</div>' \
                             f'<div class="col_type"><i>({get_col_type(df,df[col])})</i></div>' \
                             f'</div>'
     col_selector_html += f'</div><div class="agg_selector">{aggregation_options}</div>' \
                          f'</div>'
 
-    if graph_type not in single_x_col_types_obligatory:
-        if graph_type in single_x_col_types_optional:
-            col_selector_html += "<br><p>You can optionally select a column for the X-axis.</p><div class='col_selector_x'><div class='col_item_container'>"
-        else:
-            col_selector_html += "<br><p>Please select a column for the X-axis.</p><div class='col_selector_x'><div class='col_item_container'>"
+    if graph_type not in no_x_col_types:
+        col_selector_html += "<br><p>Please select a column for the X-axis.</p><div class='col_selector_x'><div class='col_item_container'>"
         for col in df.columns:
             col_selector_html += f'<div class="col_item">' \
-                                f'<div class="col_checkbox"><input type="checkbox" name="columns_2" value="{col}" {"checked" if cols_2 and col in cols_2 else ""}>{col}</div>' \
+                                f'<div class="col_checkbox"><input type="checkbox" onchange="this.form.submit()" name="columns_2" value="{col}" {"checked" if cols_2 and col in cols_2 else ""}>{col}</div>' \
                                 f'<div class="col_type"><i>({get_col_type(df,df[col])})</i></div>' \
                                 f'</div>'
         col_selector_html += '</div></div>'
-
-
-    
     return col_selector_html
-    
+
+def col_rules_info(graph_type):
+    import config
+    single_x_col_types_obligatory = config.single_x_col_types_obligatory
+    single_x_col_types_optional   = config.single_x_col_types_optional
+    multi_y_col_types_optional  = config.multi_y_col_types_optional
+
+    if graph_type in single_x_col_types_obligatory:
+        return "<p>For this visualization, one column must be selected for the X-axis.</p>"
+    elif graph_type in single_x_col_types_optional:
+        return "<p>For this visualization, one column can optionally be selected for the X-axis.</p>"
+    elif graph_type in multi_y_col_types_optional:
+        return "<p>For this visualization, one or more columns can be selected for the Y-axis.</p>"
+    else:
+        return "<p>No specific rules for column selection for this visualization.</p>"

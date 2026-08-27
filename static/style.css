@@ -53,20 +53,22 @@ h1 {
 }
 
 
-.col_selector {
-    display: flex;
-    flex-direction: row;
-    max-width: 600px;
-    margin: 0 auto;
-    column-gap: 15px;
-    row-gap: 5px;
-}
+
 
 .col_selector_x {
     /*display: flex;*/
     flex-direction: row;
     max-width: 600px;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
+    column-gap: 15px;
+    row-gap: 5px;
+}
+
+.col_selector {
+    display: flex;
+    flex-direction: row;
+    max-width: 600px;
+    /*margin: 0 auto;*/
     column-gap: 15px;
     row-gap: 5px;
 }
@@ -76,9 +78,10 @@ h1 {
     flex-direction: row;
     flex-wrap: wrap;
     max-width: 600px;
-    margin: 0 auto;
+    margin: 0;
     column-gap: 15px;
     row-gap: 5px;
+    justify-content: flex-start;
 }
 
 .selector_dropdown {
@@ -93,4 +96,24 @@ h1 {
 
 .agg_selector {
     max-width: 150px;
+}
+
+.graph_container_left {
+    border-color: #007deb;
+    border: solid;
+}
+
+.graph_container_right {
+    border-color: #007deb;
+    border: solid;
+}
+
+.graph_container_full {
+    border-color: #007deb;
+    border: solid;
+    display: flex;
+    flex-direction: row;
+    margin: 0 auto;
+    column-gap: 15px;
+    row-gap: 5px;
 }
