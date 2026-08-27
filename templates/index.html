@@ -3,49 +3,100 @@
 <head>
     <meta charset="UTF-8">
     <title>Dataset Visualizer</title>
-
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
-
     <h1>Dataset Visualizer</h1>
-
-    <div class="main_container">
-        <div class="sub_container" name="dataset">
-            Hier wird mindestens mal angezeigt, welches Dataset in Verwendung ist, bei mehreren ggf. Auswahlmöglichkeit<br>
-            Ggf. auch die Möglichkeit, ein neues Dataset hochzuladen
-            {% if not dropdown_html %}
-                <p>{{ message_no_datasets }}</p>
-            {% else %}
-                <form method="POST" action="/">
+    <form method="POST" action="/">
+        <div class="main_container">
+            <!-- DATASET -->
+            
+            <div class="sub_container" name="dataset">
+                <p>
+                    Select the dataset here. <!-- Will need an option to upload files later-->
+                </p>
+                {% if not dropdown_html %}
+                    <p>
+                        {{ message_no_datasets }}
+                    </p>
+                {% else %}
                     <select name="dataset" onchange="this.form.submit()" class="selector_dropdown">
                         {{ dropdown_html | safe }}
                     </select>
-                </form>
-            {% endif %}
-        </div>
-        <div class="sub_container" name="visual_type">
-            Hier soll es eine Option geben, welche Art von Visualisierung angezeigt werden soll (z.B. Balkendiagramm, Liniendiagramm, etc.)<br>
-            Die Liste wird hard-coded basierend darauf, was die Funktionen entsprechend anzeigen können.<br>
-            Ggf. mit kleinen Bildchen.
-        </div>
-        <div class="sub_container" name="columns">
-            Hier soll es eine Möglichkeit geben, die Spalten auszuwählen, die in der Visualisierung angezeigt werden sollen.<br>
-            Die Spalten werden basierend auf einer Funktion angeboten, die das Datenset analysiert und die Spaltennamen zurückgibt.<br>
-            Ggf. mit Ausgabe des Typus.<br>
-            {{ columns_html | safe }}
-        </div>
-        <div class="sub_container" name="filters">
-            Hier soll es eine Möglichkeit geben, Filter auf die Daten anzuwenden, die in der Visualisierung angezeigt werden sollen.<br>
-            Die Filter werden basierend auf einer Funktion angeboten, die das Datenset analysiert und die Inhalte der Spalten zurückgibt.<br>
-            Basierend auf den Optionen dann als Data-Range, Dropdown, Multi-Select, etc. darstellen.<br>
-        </div>
-        <div class="sub_container" name="graph">
-            Hier sitzt das Herzstück: der Graph, der basierend auf den vorherigen Einstellungen erstellt wird.<br>
-        </div>
-    </div>
+                {% endif %}
+            </div>
 
+            <!-- VISUALIZATION TYPE -->
+
+            <div class="sub_container" name="visual_type">
+                <p>
+                    Visualization type:
+                </p>
+                <select name="visual_type" onchange="this.form.submit()">
+                    <option value="">
+                        -- Select visualization --
+                    </option>
+
+                    <option value="bar" {% if visual_type == "bar" %}selected{% endif %}>
+                        Bar chart
+                    </option>
+
+                    <option value="line" {% if visual_type == "line" %}selected{% endif %}>
+                        Line chart
+                    </option>
+
+                    <option value="scatter" {% if visual_type == "scatter" %}selected{% endif %}>
+                        Scatter plot
+                    </option>
+
+                    <option value="pie" {% if visual_type == "pie" %}selected{% endif %}>
+                        Pie chart
+                    </option>
+
+                    <option value="boxplot" {% if visual_type == "boxplot" %}selected{% endif %}>
+                        Box plot
+                    </option>
+
+                    <option value="hist" {% if visual_type == "hist" %}selected{% endif %}>
+                        Histogram
+                    </option>
+
+                </select>
+            </div>
+
+            <!-- COLUMNS -->
+
+            <div class="sub_container" name="columns">
+                <p>
+                    Select columns:
+                </p>
+                {{ columns_html | safe }}
+            </div>
+
+            <!-- FILTER -->
+
+            <div class="sub_container" name="filters">
+                <p>
+                    Filters will be added here later.
+                </p>
+            </div>
+
+            <!-- GRAPH -->
+
+            <div class="sub_container" name="graph">
+                <p>
+                    Here is the graph.
+                </p>
+                {% if generated_graph %}
+                    {{ generated_graph | safe }}
+                {% else %}
+                    <p>
+                        Select a visualization and at least one column.
+                    </p>
+                {% endif %}
+            </div>
+        </div>
+    </form>
 </body>
-
 </html>
