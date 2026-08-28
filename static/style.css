@@ -117,3 +117,63 @@ h1 {
     column-gap: 15px;
     row-gap: 5px;
 }
+
+
+/*.tabbox {
+  max-width: 600px;  maximale Breite der Box 
+}*/
+
+.tabbox input[type='radio'] {
+  display: none; /* Radiobuttons werden versteckt, sie sind nur für den Code wichtig */
+}
+
+.tabbox label {
+  display: inline-block;
+  padding: 10px 16px;
+  background: #ccc; /* normale Farbe der Tabs */
+  cursor: pointer; /* Maus zeigt, dass der Tab klickbar ist */
+  margin-right: 4px; /* Abstand zwischen den Tabs */
+}
+
+.tabbox label:hover {
+  background: #bbb; /* Farbe beim Darüberfahren mit der Maus */
+}
+
+/* Aktiver Tab */
+#tab1:checked + label,
+#tab2:checked + label {
+  background: #333;
+  color: #fff; /* zeigt an, welcher Tab aktiv ist */
+}
+
+.tab-content {
+  border: 1px solid #333; /* Rahmen um den Inhaltsbereich */
+  padding: 5px;
+  display: none; /* Inhalt zunächst unsichtbar */
+}
+
+/* Inhalt anzeigen, wenn der entsprechende Tab aktiv ist */
+#tab1:checked ~ .content1,
+#tab2:checked ~ .content2 {
+  display: block;
+}
+
+.info_box {
+    position: relative;
+    max-width: 700px;
+    margin: 0 auto;
+}
+.info_box_right {
+    font-size: small;
+    border-left: 3px solid #737373;
+    border-bottom: 3px solid #737373;
+    width: 355px;
+    position: absolute;
+    right: -17px;
+    top: -16px;
+    margin: 0;
+}
+
+.info_box_right ul {
+    margin-left: -15px;
+}

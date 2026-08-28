@@ -80,27 +80,29 @@ def get_col_type(df, col):
     else:
         return "other"
 
-def get_aggregation_options(graph_type):
+def get_aggregation_options(graph_type,active_aggregation=None):
     # Für das Pie-Chart machen manche Aggregationen nur bedingt viel Sinn, aber theoretisch kann man auch die Minimalwerte zweier Kategorien in Verhältnis setzen wollen
     if graph_type in ["bar","line","pie"]:
         aggregation_html =  'Please select an aggregation method:<br>' \
-                            '<select name="aggregation">' \
-                            '<option value="count">Count</option>' \
-                            '<option value="sum">Sum</option>' \
-                            '<option value="mean">Mean</option>' \
-                            '<option value="median">Median</option>' \
-                            '<option value="max">Max</option>' \
-                            '<option value="min">Min</option>' \
+                            '<select name="aggregation" onchange="this.form.submit()">' \
+                            f'<option value="count" {"selected" if active_aggregation == "count" else ""}>Count</option>' \
+                            f'<option value="sum" {"selected" if active_aggregation == "sum" else ""}>Sum</option>' \
+                            f'<option value="mean" {"selected" if active_aggregation == "mean" else ""}>Mean</option>' \
+                            f'<option value="median" {"selected" if active_aggregation == "median" else ""}>Median</option>' \
+                            f'<option value="max" {"selected" if active_aggregation == "max" else ""}>Max</option>' \
+                            f'<option value="min" {"selected" if active_aggregation == "min" else ""}>Min</option>' \
                             '</select>'
     else:
         aggregation_html = ""
     
     return aggregation_html
 
-def get_cols(spec_dataset=None, graph_type="line", cols_1=None, cols_2=None):
+def get_cols(spec_dataset=None, graph_type="line", cols_1=None, cols_2=None, active_aggregation=None):
     import config
     datasets = get_data()
     no_x_col_types = config.no_x_col_types
+    single_y_col_types = config.single_y_col_types_mandatory
+
 
     col_selector_html = "<p>Please select columns for the Y-axis.</p><div class='col_selector'><div class='col_item_container'>"
 
@@ -113,11 +115,16 @@ def get_cols(spec_dataset=None, graph_type="line", cols_1=None, cols_2=None):
     if not selected_dataset:
         return "An Error occurred: No dataset selected."
 
+    if graph_type in single_y_col_types:
+        input_type = "radio"
+    else:
+        input_type = "checkbox"
+
     df = get_dataframe(selected_dataset)
-    aggregation_options = get_aggregation_options(graph_type)
+    aggregation_options = get_aggregation_options(graph_type, active_aggregation=active_aggregation)
     for col in df.columns:
         col_selector_html += f'<div class="col_item">' \
-                            f'<div class="col_checkbox"><input type="checkbox" onchange="this.form.submit()" name="columns_1" value="{col}" {"checked" if cols_1 and col in cols_1 else ""}>{col}</div>' \
+                            f'<div class="col_checkbox"><input type="{input_type}" onchange="this.form.submit()" name="columns_1" value="{col}" {"checked" if cols_1 and col in cols_1 else ""}>{col}</div>' \
                             f'<div class="col_type"><i>({get_col_type(df,df[col])})</i></div>' \
                             f'</div>'
     col_selector_html += f'</div><div class="agg_selector">{aggregation_options}</div>' \
@@ -127,23 +134,30 @@ def get_cols(spec_dataset=None, graph_type="line", cols_1=None, cols_2=None):
         col_selector_html += "<br><p>Please select a column for the X-axis.</p><div class='col_selector_x'><div class='col_item_container'>"
         for col in df.columns:
             col_selector_html += f'<div class="col_item">' \
-                                f'<div class="col_checkbox"><input type="checkbox" onchange="this.form.submit()" name="columns_2" value="{col}" {"checked" if cols_2 and col in cols_2 else ""}>{col}</div>' \
+                                f'<div class="col_checkbox"><input type="radio" onchange="this.form.submit()" name="columns_2" value="{col}" {"checked" if cols_2 and col in cols_2 else ""}>{col}</div>' \
                                 f'<div class="col_type"><i>({get_col_type(df,df[col])})</i></div>' \
                                 f'</div>'
         col_selector_html += '</div></div>'
     return col_selector_html
 
 def col_rules_info(graph_type):
-    import config
-    single_x_col_types_obligatory = config.single_x_col_types_obligatory
-    single_x_col_types_optional   = config.single_x_col_types_optional
-    multi_y_col_types_optional  = config.multi_y_col_types_optional
 
-    if graph_type in single_x_col_types_obligatory:
-        return "<p>For this visualization, one column must be selected for the X-axis.</p>"
-    elif graph_type in single_x_col_types_optional:
-        return "<p>For this visualization, one column can optionally be selected for the X-axis.</p>"
-    elif graph_type in multi_y_col_types_optional:
-        return "<p>For this visualization, one or more columns can be selected for the Y-axis.</p>"
+    import config
+    no_x_col_types = config.no_x_col_types
+    single_y_col_types   = config.single_y_col_types_mandatory
+
+    info_box = "<div class='info_box'><div class='info_box_left'>Please select your columns<br><br></div><div class='info_box_right'>"
+    info_box += "<p>Please note the following for your selected graph type:</p><ul>"
+
+    if graph_type in single_y_col_types:
+        info_box += "<li>This Graph accepts exactly one Y-axis.</li>"
+    else:   
+        info_box += "<li>This Graph accepts one or more columns for the Y-axis.</li>"
+        
+    if graph_type in no_x_col_types:
+        info_box += "<li>This Graph does not accept a column for the X-axis.</li>"
     else:
-        return "<p>No specific rules for column selection for this visualization.</p>"
+        info_box += "<li>This Graph requires a column for the X-axis.</li>"
+
+    info_box += "</ul></div></div>"
+    return info_box

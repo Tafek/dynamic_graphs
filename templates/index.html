@@ -70,9 +70,7 @@
             <!-- COLUMNS -->
 
             <div class="sub_container" name="columns">
-                <p>
-                    Select columns:
-                </p>
+                {{ columns_info | safe }}
                 {{ columns_html | safe }}
             </div>
 
