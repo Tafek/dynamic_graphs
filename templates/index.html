@@ -14,57 +14,53 @@
         <div class="main_container">
             <!-- DATASET -->
             
-            <div class="sub_container" name="dataset">
-                <p>
-                    Select the dataset here. <!-- Will need an option to upload files later-->
-                </p>
-                {% if not dropdown_html %}
-                    <p>
-                        {{ message_no_datasets }}
-                    </p>
-                {% else %}
-                    <select name="dataset" onchange="this.form.submit()" class="selector_dropdown">
-                        {{ dropdown_html | safe }}
-                    </select>
-                {% endif %}
-            </div>
+            <div class="sub_container" name="dataset_visual">
+                <div class="selector_row">
+                    <!-- Dataset -->
+                    <div class="selector_item">
+                        
+                            Select a dataset:
+                        
+                        {% if not dropdown_html %}
+                            
+                                {{ message_no_datasets }}
+                            
+                        {% else %}
+                            <select name="dataset" onchange="this.form.submit()" class="selector_dropdown">
+                                {{ dropdown_html | safe }}
+                            </select>
+                        {% endif %}
+                        {{ df_rows | safe }} rows, {{ df_cols | safe }} columns
+                    </div>
 
-            <!-- VISUALIZATION TYPE -->
-
-            <div class="sub_container" name="visual_type">
-                <p>
-                    Visualization type:
-                </p>
-                <select name="visual_type" onchange="this.form.submit()">
-                    <option value="">
-                        -- Select visualization --
-                    </option>
-
-                    <option value="bar" {% if visual_type == "bar" %}selected{% endif %}>
-                        Bar chart
-                    </option>
-
-                    <option value="line" {% if visual_type == "line" %}selected{% endif %}>
-                        Line chart
-                    </option>
-
-                    <option value="scatter" {% if visual_type == "scatter" %}selected{% endif %}>
-                        Scatter plot
-                    </option>
-
-                    <option value="pie" {% if visual_type == "pie" %}selected{% endif %}>
-                        Pie chart
-                    </option>
-
-                    <option value="boxplot" {% if visual_type == "boxplot" %}selected{% endif %}>
-                        Box plot
-                    </option>
-
-                    <option value="hist" {% if visual_type == "hist" %}selected{% endif %}>
-                        Histogram
-                    </option>
-
-                </select>
+                    <!-- Visualization Type -->
+                    <div class="selector_item">
+                        Select a visualization type:
+                        <select name="visual_type" onchange="this.form.submit()" class="selector_dropdown">
+                            <option value="">
+                                -- Select visualization --
+                            </option>
+                            <option value="bar" {% if visual_type == "bar" %}selected{% endif %}>
+                                Bar chart
+                            </option>
+                            <option value="line" {% if visual_type == "line" %}selected{% endif %}>
+                                Line chart
+                            </option>
+                            <option value="scatter" {% if visual_type == "scatter" %}selected{% endif %}>
+                                Scatter plot
+                            </option>
+                            <option value="pie" {% if visual_type == "pie" %}selected{% endif %}>
+                                Pie chart
+                            </option>
+                            <option value="boxplot" {% if visual_type == "boxplot" %}selected{% endif %}>
+                                Box plot
+                            </option>
+                            <option value="hist" {% if visual_type == "hist" %}selected{% endif %}>
+                                Histogram
+                            </option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <!-- COLUMNS -->
@@ -78,7 +74,7 @@
 
             <div class="sub_container" name="filters">
                 <p>
-                    Filters will be added here later.
+                    {{ html_filters | safe }}
                 </p>
             </div>
 

@@ -18,38 +18,47 @@ h1 {
 .main_container {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-template-areas: 
+        "dataset_visual filters"
+        "columns filters"
+        "graph graph";
     gap: 15px;
-
     max-width: 1400px;
     margin: 0 auto;
 }
 
 .sub_container {
     padding: 15px;
-
     background-color: #959595;
     border: 1px solid #ccc;
     border-radius: 8px;
-
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
 }
 
-/* Der Graph soll über die gesamte Breite gehen */
+/* Zuordnung der Grid-Bereiche */
+.sub_container[name="dataset_visual"] { grid-area: dataset_visual; }
+.sub_container[name="columns"] { grid-area: columns; }
+.sub_container[name="filters"] { grid-area: filters; }
+.sub_container[name="graph"] { grid-area: graph; }
+
+/* NEU: Dataset und Visual Type innerhalb der Box nebeneinander anordnen */
+.selector_row {
+    display: flex;
+    gap: 20px;
+}
+
+.selector_item {
+    flex: 1; /* Teilt den Platz gleichmäßig 50/50 auf */
+}
+
+/* Damit die Dropdowns sich sauber anpassen */
+.selector_item select {
+    width: 100%;
+}
+
+/* Der Graph geht nach wie vor über die volle Breite */
 .sub_container[name="graph"] {
-    grid-column: 1 / -1;
     min-height: 400px;
-}
-
-/* Dataset und Visualisierung etwas hervorheben */
-.sub_container[name="dataset"],
-.sub_container[name="visual_type"] {
-    min-height: 150px;
-}
-
-/* Spalten und Filter */
-.sub_container[name="columns"],
-.sub_container[name="filters"] {
-    min-height: 200px;
 }
 
 
@@ -177,4 +186,10 @@ h1 {
 
 .info_box_right ul {
     margin-left: -15px;
+}
+
+.table_container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
 }

@@ -2,10 +2,16 @@ import os
 
 from flask import Flask, render_template, request
 
-from functions.get_cols import col_rules_info, get_cols, get_dataframe
+from functions.get_cols import (
+    col_rules_info,
+    get_amount_cols,
+    get_amount_rows,
+    get_cols,
+    get_dataframe,
+)
 from functions.get_data import get_data_dropdown
-from functions.show_graph import show_graph
-from functions.test_function import display_head
+from functions.get_filters import get_filters
+from functions.show_graph import display_head, show_graph
 
 app = Flask(__name__)
 
@@ -50,15 +56,21 @@ def index():
         columns_2 = []
 
     if spec_dataset:
+        df = get_dataframe(f"data/{spec_dataset}")
         dropdown_html = get_data_dropdown(spec_dataset)
-        columns_html = get_cols(spec_dataset, graph_type=visual_type, cols_1=columns_1, cols_2=columns_2,active_aggregation=request.form.get("aggregation"))
-        test_header = display_head(
-            get_dataframe(f"data/{spec_dataset}")
-        )
+        columns_html = get_cols(spec_dataset, graph_type=visual_type, cols_1=columns_1, cols_2=columns_2, active_aggregation=request.form.get("aggregation"))
+        html_filters = get_filters(spec_dataset, form_data=request.form)
+        test_header = display_head(df)
+        df_cols = get_amount_cols(df)
+        df_rows = get_amount_rows(df)
     else:
+        df = None
         dropdown_html = get_data_dropdown()
         columns_html = get_cols(graph_type=visual_type, cols_1=columns_1, cols_2=columns_2, active_aggregation=request.form.get("aggregation"))
+        html_filters = get_filters()
         test_header = display_head()
+        df_cols = get_amount_cols(df)
+        df_rows = get_amount_rows(df)
 
     # --------------------------------
     # Generate Graph
@@ -82,25 +94,23 @@ def index():
         generated_graph += '<div class="graph_container_left">'
         if visual_type in ["line", "scatter", "bar", "pie","boxplot"] and (len(columns_2) == 0 or len(columns_1) == 0):
             generated_graph += "<p>For this visualization, two columns must be selected.</p>"
-            # Fallback to display the head of the dataset if no graph is shown
             
 
         elif visual_type in ["hist"] and len(columns_1) < 1:
             generated_graph += "<p>Please select at least one column.</p>"
-            # Fallback to display the head of the dataset if no graph is shown
-            generated_graph += display_head(get_dataframe(f"data/{spec_dataset}"))
+            generated_graph += display_head(df)
 
         else:
             generated_graph += show_graph(  type=visual_type,
                                             cols_1=columns_1,
                                             cols_2=columns_2,
-                                            df=get_dataframe(f"data/{spec_dataset}"),
+                                            df=df,
                                             method=request.form.get("aggregation"))
             generated_graph += "</div>"
             #generated_graph += show_graph_settings( type=visual_type,
             #                                        cols_1=columns_1,
             #                                        cols_2=columns_2,
-            #                                        df=get_dataframe(f"data/{spec_dataset}"))
+            #                                        df=df)
             generated_graph += '<div class="graph_container_right">Placeholder for further Visual Settings (Avg. etc.)</div>'
         #generated_graph += '</div>'
     else:
@@ -109,7 +119,7 @@ def index():
     if not spec_dataset:
         generated_table_head = "<p>No dataset selected.</p>"
     else:
-        generated_table_head = display_head(get_dataframe(f"data/{spec_dataset}"))
+        generated_table_head = display_head(df)
     tab_box +=  f"<div class='tab-content content1'> \
                 {generated_table_head} \
                 </div>"
@@ -140,7 +150,10 @@ def index():
         visual_type=visual_type,
         columns_info = col_rules_info(visual_type),
         columns_1=columns_1,
-        columns_2=columns_2
+        columns_2=columns_2,
+        html_filters = html_filters,
+        df_cols = df_cols,
+        df_rows = df_rows
     )
 
 
