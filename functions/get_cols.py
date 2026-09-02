@@ -1,4 +1,5 @@
 import csv
+import os
 
 import pandas as pd
 
@@ -57,14 +58,17 @@ def clean_df(df):
 
 
 def get_dataframe(file):
-    separator = get_separator(file)
-    df_step_1 = pd.read_csv(file, sep=separator, header=None,skip_blank_lines=False)
-    not_na_df = df_step_1.notna().sum(axis=1)
-    max_cols = not_na_df.max()
-    header_row = df_step_1[not_na_df == max_cols].index[0]
-    df = pd.read_csv(file, sep=separator, header=header_row)
-    df = clean_df(df)
-    return df
+    if not file:
+        return pd.DataFrame()  # Return an empty DataFrame if no file is provided
+    else:
+        separator = get_separator(file)
+        df_step_1 = pd.read_csv(file, sep=separator, header=None,skip_blank_lines=False)
+        not_na_df = df_step_1.notna().sum(axis=1)
+        max_cols = not_na_df.max()
+        header_row = df_step_1[not_na_df == max_cols].index[0]
+        df = pd.read_csv(file, sep=separator, header=header_row)
+        df = clean_df(df)
+        return df
 
 def get_col_type(df, col):
     if pd.api.types.is_numeric_dtype(col):
@@ -109,11 +113,13 @@ def get_cols(spec_dataset=None, graph_type="line", cols_1=None, cols_2=None, act
     if spec_dataset is None:
         if datasets:
             selected_dataset = f"data/{datasets[0]}"
+        else:
+            selected_dataset = None
     else:
         selected_dataset = f"data/{spec_dataset}"
 
     if not selected_dataset:
-        return "An Error occurred: No dataset selected."
+        return "No dataset selected."
 
     if graph_type in single_y_col_types:
         input_type = "radio"
@@ -145,6 +151,12 @@ def col_rules_info(graph_type):
     import config
     no_x_col_types = config.no_x_col_types
     single_y_col_types   = config.single_y_col_types_mandatory
+
+    if graph_type == "":
+        info_box = "<div class='info_box'><div class='info_box_left'>Please select your columns<br><br></div><div class='info_box_right'>"
+        info_box += "<p>Please select a graph type to see the rules for column selection.</p>"
+        info_box += "</div></div>"
+        return info_box
 
     info_box = "<div class='info_box'><div class='info_box_left'>Please select your columns<br><br></div><div class='info_box_right'>"
     info_box += "<p>Please note the following for your selected graph type:</p><ul>"

@@ -85,9 +85,6 @@
             <!-- GRAPH -->
 
             <div class="sub_container" name="graph">
-                <p>
-                    Here is the graph.
-                </p>
                 {% if generated_graph %}
                     {{ generated_graph | safe }}
                 {% else %}
@@ -97,6 +94,7 @@
                 {% endif %}
             </div>
         </div>
+        <input type="hidden" name="old_dataset" value="{{ spec_dataset }}">
     </form>
 </body>
 </html>

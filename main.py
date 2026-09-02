@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request
 
 from functions.get_cols import col_rules_info, get_cols, get_dataframe
@@ -17,6 +19,8 @@ def index():
     columns_2 = []
     generated_graph = None
 
+    old_dataset = request.form.get("old_dataset")
+
     if request.method == "POST":
 
         # Fetch current Dataset from Form
@@ -30,10 +34,20 @@ def index():
         # Fetch selected columns
         columns_1 = request.form.getlist("columns_1")
         columns_2 = request.form.getlist("columns_2")
+        if old_dataset == spec_dataset:
+            columns_1 = request.form.getlist("columns_1")
+            columns_2 = request.form.getlist("columns_2")
+        else:
+            columns_1 = []
+            columns_2 = []
 
     # --------------------------------
     # Dataset / Columns / Head
     # --------------------------------
+    if not os.path.exists(f"data/{spec_dataset}"):
+        spec_dataset = None
+        columns_1 = []
+        columns_2 = []
 
     if spec_dataset:
         dropdown_html = get_data_dropdown(spec_dataset)
@@ -56,9 +70,9 @@ def index():
     tab_box = f"<div class='tabbox'> \
                 <!-- Tabs --> \
                 <input type='radio' name='tabs' id='tab1' value='table' {'checked' if active_tab == 'table' else ''}> \
-                <label for='tab1'>Data Overview</label> \
+                <label for='tab1'>Show first 15 table rows</label> \
                 <input type='radio' name='tabs' id='tab2' value='graph' {'checked' if active_tab == 'graph' else ''}> \
-                <label for='tab2'>Graph + Options</label>\
+                <label for='tab2'>Show Graph and Options</label>\
                 <!-- Inhalte -->"
                         
 
@@ -80,7 +94,8 @@ def index():
             generated_graph += show_graph(  type=visual_type,
                                             cols_1=columns_1,
                                             cols_2=columns_2,
-                                            df=get_dataframe(f"data/{spec_dataset}"))
+                                            df=get_dataframe(f"data/{spec_dataset}"),
+                                            method=request.form.get("aggregation"))
             generated_graph += "</div>"
             #generated_graph += show_graph_settings( type=visual_type,
             #                                        cols_1=columns_1,
@@ -88,8 +103,13 @@ def index():
             #                                        df=get_dataframe(f"data/{spec_dataset}"))
             generated_graph += '<div class="graph_container_right">Placeholder for further Visual Settings (Avg. etc.)</div>'
         #generated_graph += '</div>'
+    else:
+        generated_graph += "<p>Please select a dataset and a visualization type.</p></div>"
 
-    generated_table_head = display_head(get_dataframe(f"data/{spec_dataset}"))
+    if not spec_dataset:
+        generated_table_head = "<p>No dataset selected.</p>"
+    else:
+        generated_table_head = display_head(get_dataframe(f"data/{spec_dataset}"))
     tab_box +=  f"<div class='tab-content content1'> \
                 {generated_table_head} \
                 </div>"

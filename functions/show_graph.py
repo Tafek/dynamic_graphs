@@ -5,6 +5,7 @@ import io
 
 import matplotlib
 import matplotlib.pyplot as plt
+from pandas.api.types import is_numeric_dtype
 
 matplotlib.use("Agg")
 
@@ -25,29 +26,35 @@ def show_graph(type="line", cols_1=None, cols_2=None, filters=None, settings=Non
     match type:
 
         case "line":
-            df.groupby(cols_2[0])[cols_1[0]].agg(method).plot.line(ax=ax)
+            if method=="count" or is_numeric_dtype(df[cols_1[0]]):
+                df.groupby(cols_2[0])[cols_1[0]].agg(method).plot.line(ax=ax)
+            else:
+                return "<p>For this combination of visualization and aggregation method, the selected Y-axis column must be numeric.</p>"
 
         case "scatter":
-            #df.groupby(cols_2[0])[cols_1[0]].agg(method).plot.scatter(x=cols_2[0], y=cols_1[0], ax=ax)
             ax.scatter(df[cols_2[0]], df[cols_1[0]])
 
         case "bar":
-            df.groupby(cols_2[0])[cols_1[0]].agg(method).plot.bar(ax=ax)
+            if method=="count" or is_numeric_dtype(df[cols_1[0]]):
+                df.groupby(cols_2[0])[cols_1[0]].agg(method).plot.bar(ax=ax)
+            else:
+                return "<p>For this combination of visualization and aggregation method, the selected Y-axis column must be numeric.</p>"
 
         case "hist":
-            #ax.hist(df[cols_1[0]])
             df[cols_1[0]].plot.hist(ax=ax)
 
         case "boxplot":
-            #ax.boxplot(df[cols_1[0]])
-            df.boxplot(column=cols_1[0], by=cols_2[0], ax=ax)
+            if is_numeric_dtype(df[cols_1[0]]):
+                df.boxplot(column=cols_1[0], by=cols_2[0], ax=ax)
+            else:
+                return "<p>For this visualization, the selected Y-axis column must be numeric.</p>"
 
         case "pie":
-            #ax.pie(df[cols_1[0]])
-            #df.groupby(cols_2[0])[cols_1[0]].agg(method).plot.pie(y=cols_1[0], ax=ax)
-            #ax.pie(df[cols_1[0]], labels=df[cols_2[0]], autopct='%1.1f%%', startangle=90)
-            data = df.groupby(cols_2[0])[cols_1[0]].agg(method)
-            ax.pie(data,labels=data.index,autopct="%1.1f%%",startangle=90)
+            if method=="count" or is_numeric_dtype(df[cols_1[0]]):
+                data = df.groupby(cols_2[0])[cols_1[0]].agg(method)
+                ax.pie(data,labels=data.index,autopct="%1.1f%%",startangle=90)
+            else:
+                return "<p>For this combination of visualization and aggregation method, the selected Y-axis column must be numeric.</p>"
 
     # Figure in PNG umwandeln
     image = io.BytesIO()
