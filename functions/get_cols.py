@@ -142,8 +142,8 @@ def get_cols(spec_dataset=None, graph_type="line", cols_1=None, cols_2=None, act
 
     if graph_type not in no_x_col_types:
         col_selector_html += "<br><p>Please select a column for the X-axis.</p><div class='col_selector_x'><div class='col_item_container'>"
-        col_type = get_col_type(df[col])
         for col in df.columns:
+            col_type = get_col_type(df[col])
             col_selector_html += f'<div class="col_item">' \
                                 f'<div class="col_checkbox"><input type="radio" onchange="this.form.submit()" name="columns_2" value="{col}" {"checked" if cols_2 and col in cols_2 else ""}>{col}</div>' \
                                 f'<div class="col_type"><i>({col_type})</i></div>' \
