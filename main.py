@@ -8,6 +8,7 @@ from functions.get_cols import (
     get_amount_rows,
     get_cols,
     get_dataframe,
+    get_filtered_df,
 )
 from functions.get_data import get_data_dropdown
 from functions.get_filters import get_filters
@@ -24,6 +25,7 @@ def index():
     columns_1 = []
     columns_2 = []
     generated_graph = None
+    df_num_filters = {}
 
     old_dataset = request.form.get("old_dataset")
 
@@ -43,6 +45,15 @@ def index():
         if old_dataset == spec_dataset:
             columns_1 = request.form.getlist("columns_1")
             columns_2 = request.form.getlist("columns_2")
+            if request.method == "POST":
+                for key, value in request.form.items():
+                    if key.startswith("filter_") and value != "":
+                        parts = key.rsplit("_", 1)
+                        col = parts[0][7:]
+                        filter_type = parts[1]
+                        if col not in df_num_filters:
+                            df_num_filters[col] = {}
+                        df_num_filters[col][filter_type] = float(value)
         else:
             columns_1 = []
             columns_2 = []
@@ -57,12 +68,14 @@ def index():
 
     if spec_dataset:
         df = get_dataframe(f"data/{spec_dataset}")
+        filtered_df = get_filtered_df(df, df_num_filters)
         dropdown_html = get_data_dropdown(spec_dataset)
         columns_html = get_cols(spec_dataset, graph_type=visual_type, cols_1=columns_1, cols_2=columns_2, active_aggregation=request.form.get("aggregation"))
         html_filters = get_filters(spec_dataset, form_data=request.form)
         test_header = display_head(df)
         df_cols = get_amount_cols(df)
         df_rows = get_amount_rows(df)
+        df_filtered_rows = get_amount_rows(filtered_df)
     else:
         df = None
         dropdown_html = get_data_dropdown()
@@ -71,6 +84,7 @@ def index():
         test_header = display_head()
         df_cols = get_amount_cols(df)
         df_rows = get_amount_rows(df)
+        df_filtered_rows = df_rows
 
     # --------------------------------
     # Generate Graph
@@ -104,7 +118,7 @@ def index():
             generated_graph += show_graph(  type=visual_type,
                                             cols_1=columns_1,
                                             cols_2=columns_2,
-                                            df=df,
+                                            df=filtered_df,
                                             method=request.form.get("aggregation"))
             generated_graph += "</div>"
             #generated_graph += show_graph_settings( type=visual_type,
@@ -153,7 +167,9 @@ def index():
         columns_2=columns_2,
         html_filters = html_filters,
         df_cols = df_cols,
-        df_rows = df_rows
+        df_rows = df_rows,
+        df_filtered_rows = df_filtered_rows
+        
     )
 
 

@@ -188,3 +188,14 @@ def get_amount_cols(df=None):
     if df is None:
         return 0
     return df.shape[1]
+
+def get_filtered_df(df, df_num_filters):
+    if df is None or not df_num_filters:
+        return df
+    filtered_df = df.copy()
+    for col, filters in df_num_filters.items():
+        if "min" in filters:
+            filtered_df = filtered_df[filtered_df[col] >= filters["min"]]
+        if "max" in filters:
+            filtered_df = filtered_df[filtered_df[col] <= filters["max"]]
+    return filtered_df
