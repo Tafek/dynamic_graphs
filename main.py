@@ -47,16 +47,18 @@ def index():
             columns_2 = request.form.getlist("columns_2")
             if request.method == "POST":
                 for key, value in request.form.items():
-                    if key.startswith("filter_") and value != "":
+                    if key.startswith("filter_numeric") and value != "":
                         parts = key.rsplit("_", 1)
-                        col = parts[0][7:]
+                        col = parts[0][14:]
                         filter_type = parts[1]
                         if col not in df_num_filters:
                             df_num_filters[col] = {}
                         df_num_filters[col][filter_type] = float(value)
+            dataset_switched = False
         else:
             columns_1 = []
             columns_2 = []
+            dataset_switched = True
 
     # --------------------------------
     # Dataset / Columns / Head
@@ -71,7 +73,7 @@ def index():
         filtered_df = get_filtered_df(df, df_num_filters)
         dropdown_html = get_data_dropdown(spec_dataset)
         columns_html = get_cols(spec_dataset, graph_type=visual_type, cols_1=columns_1, cols_2=columns_2, active_aggregation=request.form.get("aggregation"))
-        html_filters = get_filters(spec_dataset, form_data=request.form)
+        html_filters = get_filters(spec_dataset, form_data=request.form, dataset_switched=dataset_switched)
         test_header = display_head(df)
         df_cols = get_amount_cols(df)
         df_rows = get_amount_rows(df)
@@ -112,7 +114,6 @@ def index():
 
         elif visual_type in ["hist"] and len(columns_1) < 1:
             generated_graph += "<p>Please select at least one column.</p>"
-            generated_graph += display_head(df)
 
         else:
             generated_graph += show_graph(  type=visual_type,

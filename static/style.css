@@ -193,3 +193,28 @@ h1 {
     max-width: 100%;
     overflow-x: auto;
 }
+
+.regex_input {
+    display: flex;
+}
+
+.filter_container {
+    display: flex;
+    column-gap: 30px;
+}
+
+/*#input[type="number"] {
+    width: 110px;
+}*/
+
+.range_slider input[type="range"] {
+    width: 125px;
+}
+
+.range_inputs input:first-child {
+    width: 75px;
+}
+
+.range_inputs input:last-child {
+    width: 185px;
+}
