@@ -26,6 +26,10 @@ def index():
     columns_2 = []
     generated_graph = None
     df_num_filters = {}
+    df_categorial_filters = {}
+    df_bool_filters = {}
+    df_string_filters = {}
+    df_datetime_filters = {}
 
     old_dataset = request.form.get("old_dataset")
 
@@ -46,14 +50,62 @@ def index():
             columns_1 = request.form.getlist("columns_1")
             columns_2 = request.form.getlist("columns_2")
             if request.method == "POST":
-                for key, value in request.form.items():
+                # Erst alle aktiven Kategorie-Filter mit leerer Liste initialisieren
+                for key in request.form:
+                    if key.startswith("filter_category_active_"):
+                        col = key[len("filter_category_active_"):]
+                        df_categorial_filters[col] = []
+                    elif key.startswith("filter_bool_active_"):
+                        col = key[len("filter_bool_active_"):]
+                        df_bool_filters[col] = []
+
+                for key, value in request.form.items(multi=True):
+                    #Numeric
                     if key.startswith("filter_numeric") and value != "":
                         parts = key.rsplit("_", 1)
-                        col = parts[0][14:]
+                        col = parts[0][15:]
                         filter_type = parts[1]
                         if col not in df_num_filters:
                             df_num_filters[col] = {}
                         df_num_filters[col][filter_type] = float(value)
+
+                    # Categorical
+                    elif key.startswith("filter_category_") and not key.startswith("filter_category_active_"):
+                        col = key[len("filter_category_"):]
+                        if col not in df_categorial_filters:
+                            df_categorial_filters[col] = []
+                        df_categorial_filters[col].append(value)
+
+                    # Boolean
+                    elif key.startswith("filter_bool_") and not key.startswith("filter_bool_active_"):
+                        col = key[len("filter_bool_"):]
+                        if col not in df_bool_filters:
+                            df_bool_filters[col] = []
+                        df_bool_filters[col].append(value)
+
+                    # String
+                    elif key.startswith("filter_string_regex_") and value != "":
+                        col = key[len("filter_string_regex_"):]
+                        if col not in df_string_filters:
+                            df_string_filters[col] = {}
+                        df_string_filters[col]["regex"] = value
+
+                    elif key.startswith("filter_string_inclexcl_"):
+                        col = key[len("filter_string_inclexcl_"):]
+                        if col not in df_string_filters:
+                            df_string_filters[col] = {}
+                        df_string_filters[col]["include_exclude"] = value
+
+
+                    # Datetime
+                    elif key.startswith("filter_datetime_"):
+                        parts = key[len("filter_datetime_"):].rsplit("_", 1)
+                        col = parts[0]
+                        filter_type = parts[1]
+                        if col not in df_datetime_filters:
+                            df_datetime_filters[col] = {}
+                        df_datetime_filters[col][filter_type] = value
+
             dataset_switched = False
         else:
             columns_1 = []
@@ -70,7 +122,7 @@ def index():
 
     if spec_dataset:
         df = get_dataframe(f"data/{spec_dataset}")
-        filtered_df = get_filtered_df(df, df_num_filters)
+        filtered_df = get_filtered_df(df, df_num_filters, df_categorial_filters, df_bool_filters, df_datetime_filters, df_string_filters)
         dropdown_html = get_data_dropdown(spec_dataset)
         columns_html = get_cols(spec_dataset, graph_type=visual_type, cols_1=columns_1, cols_2=columns_2, active_aggregation=request.form.get("aggregation"))
         html_filters = get_filters(spec_dataset, form_data=request.form, dataset_switched=dataset_switched)

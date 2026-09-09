@@ -49,7 +49,7 @@ def show_graph(type="line", cols_1=None, cols_2=None, filters=None, settings=Non
         case "hist":
             df[cols_1].plot.hist(ax=ax)
 
-        case "":
+        case "boxplot":
             if all(is_numeric_dtype(df[col]) for col in cols_1):
                 df.boxplot(column=cols_1, by=cols_2[0], ax=ax)
             else:

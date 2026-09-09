@@ -189,14 +189,51 @@ def get_amount_cols(df=None):
         return 0
     return df.shape[1]
 
-def get_filtered_df(df, df_num_filters):
-    if df is None or not df_num_filters:
+def get_filtered_df(df,df_num_filters,df_categorial_filters,df_bool_filters,df_datetime_filters,df_string_filters):
+
+    if df is None:
         return df
+
     filtered_df = df.copy()
+
+    #Numeric
     for col, filters in df_num_filters.items():
-        if 'numeric' in filters:
-            if "min" in filters:
-                filtered_df = filtered_df[filtered_df[col] >= filters["min"]]
-            if "max" in filters:
-                filtered_df = filtered_df[filtered_df[col] <= filters["max"]]
+        if "min" in filters:
+            filtered_df = filtered_df[filtered_df[col] >= filters["min"]]
+        if "max" in filters:
+            filtered_df = filtered_df[filtered_df[col] <= filters["max"]]
+
+
+    # Categorical
+    for col, values in df_categorial_filters.items():
+        if values:
+            filtered_df = filtered_df[filtered_df[col].isin(values)]
+        else:
+            filtered_df = filtered_df.iloc[0:0]
+
+
+    # Boolean
+    for col, values in df_bool_filters.items():
+        bool_values = [v == "True" for v in values]
+        filtered_df = filtered_df[filtered_df[col].isin(bool_values)]
+
+
+    # Datetime
+    for col, filters in df_datetime_filters.items():
+        if "min" in filters:
+            filtered_df = filtered_df[filtered_df[col] >= filters["min"]]
+        if "max" in filters:
+            filtered_df = filtered_df[filtered_df[col] <= filters["max"]]
+
+
+    # String    
+    for col, filters in df_string_filters.items():
+        if "regex" in filters and filters["regex"] != "":
+            regex = filters["regex"]
+            include_exclude = filters.get("include_exclude", "include")
+            matches = filtered_df[col].astype(str).str.contains(regex,regex=True,na=False)
+            if include_exclude == "include":
+                filtered_df = filtered_df[matches]
+            elif include_exclude == "exclude":
+                filtered_df = filtered_df[~matches]
     return filtered_df

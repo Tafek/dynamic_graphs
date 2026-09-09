@@ -1,5 +1,3 @@
-from pyparsing import col
-
 from functions.get_cols import get_col_type, get_dataframe, get_numeric_col_type
 
 
@@ -43,7 +41,7 @@ def get_filters(spec_dataset=None, form_data=None, dataset_switched=False):
             elif col_type == "categorical":
                 contains_other_filters = True
                 unique_values = df[col].unique()
-                selected_values = form_data.getlist(f"filter_{col}")
+                selected_values = form_data.getlist(f"filter_category_{col}")
                 filter_html_categorial += "<div class='filter_item'>"
                 filter_html_categorial += f"<label>{col} (Categorical):</label>"
                 filter_html_categorial += "<div class='checkbox_group'>"
@@ -52,46 +50,50 @@ def get_filters(spec_dataset=None, form_data=None, dataset_switched=False):
                         checked = "checked" 
                     else:
                         checked = "" 
-                    filter_html_categorial += f"<label><input type='checkbox' name='filter_{col}' value='{value}' {checked} onchange='this.form.submit()'>{value}</label>"
+                    filter_html_categorial += f"<label><input type='checkbox' name='filter_category_{col}' value='{value}' {checked} onchange='this.form.submit()'>{value}</label>"
+                filter_html_categorial += f"<input type='hidden' name='filter_category_active_{col}' value='1'>"
                 filter_html_categorial += "</div></div>"
             elif col_type == "boolean":
                 contains_other_filters = True
-                selected_values = form_data.getlist(f"filter_{col}", ["True", "False"])
+                selected_values = form_data.getlist(f"filter_bool_{col}")
                 filter_html_bool += "<div class='filter_item'>"
                 filter_html_bool += f"<label>{col} (Boolean):</label>"
                 filter_html_bool += "<div class='checkbox_group'>"
                 for value in ["True", "False"]:
-                    checked = "checked" if value in selected_values else ""
-                    filter_html_bool += f"<label><input type='checkbox' name='filter_{col}' value='{value}' {checked} onchange='this.form.submit()'>{value}</label>"
+                    if dataset_switched == True or (not form_data and value in ["True", "False"]) or value in selected_values:
+                        checked = "checked" 
+                    else:
+                        checked = "" 
+                    filter_html_bool += f"<label><input type='checkbox' name='filter_bool_{col}' value='{value}' {checked} onchange='this.form.submit()'>{value}</label>"
+                filter_html_bool += f"<input type='hidden' name='filter_bool_active_{col}' value='1'>"
                 filter_html_bool += "</div></div>"
             elif col_type == "string":
                 contains_other_filters = True
                 filter_html_string += "<div class='filter_item'>"
                 filter_html_string += f"<label>{col} (String):</label>"
                 filter_html_string += "<div class='regex_input'>"
-                filter_html_string += f"<input type='text' name='filter_{col}' value='{form_data.get(f'filter_{col}', '')}' placeholder='Enter regex' onchange='this.form.submit()'>"
-                filter_html_string += f"<option value=''></option>"
-                filter_html_string += f"<select name='filter_{col}_include_exclude' onchange='this.form.submit()'>"
-                filter_html_string += f"<option value='include' {'selected' if form_data.get(f'filter_{col}_include_exclude', '') == 'include' else ''}>Include</option>"
-                filter_html_string += f"<option value='exclude' {'selected' if form_data.get(f'filter_{col}_include_exclude', '') == 'exclude' else ''}>Exclude</option>"
+                filter_html_string += f"<input type='text' name='filter_string_regex_{col}' value='{form_data.get(f'filter_string_regex_{col}', '')}' placeholder='Enter regex' onchange='this.form.submit()'>"
+                filter_html_string += "<option value=''></option>"
+                filter_html_string += f"<select name='filter_string_inclexcl_{col}' onchange='this.form.submit()'>"
+                filter_html_string += f"<option value='include' {'selected' if form_data.get(f'filter_string_inclexcl_{col}', '') == 'include' else ''}>Include</option>"
+                filter_html_string += f"<option value='exclude' {'selected' if form_data.get(f'filter_string_inclexcl_{col}', '') == 'exclude' else ''}>Exclude</option>"
                 filter_html_string += "</select>"
                 filter_html_string += "</div></div>"
             elif col_type == "datetime":
                 min_val = df[col].min()
                 max_val = df[col].max()
-                selected_min = form_data.get(f"filter_{col}_min", min_val)
-                selected_max = form_data.get(f"filter_{col}_max", max_val)
+                selected_min = form_data.get(f"filter_datetime_{col}_min", min_val)
+                selected_max = form_data.get(f"filter_datetime_{col}_max", max_val)
 
                 filter_html_date += "<div class='filter_item'>"
                 filter_html_date += f"<label>{col} (Datetime):</label>"
                 filter_html_date += "<div class='date_range_inputs'>"
-                filter_html_date += f"<input type='datetime-local' name='filter_{col}_min' value='{selected_min}' min='{min_val}' max='{max_val}' onchange='this.form.submit()'>"
-                filter_html_date += f"<input type='datetime-local' name='filter_{col}_max' value='{selected_max}' min='{min_val}' max='{max_val}' onchange='this.form.submit()'></div></div>"
+                filter_html_date += f"<input type='datetime-local' name='filter_datetime_{col}_min' value='{selected_min}' min='{min_val}' max='{max_val}' onchange='this.form.submit()'>"
+                filter_html_date += f"<input type='datetime-local' name='filter_datetime_{col}_max' value='{selected_max}' min='{min_val}' max='{max_val}' onchange='this.form.submit()'></div></div>"
         if contains_numeric_filter:
             filter_html += "<div class='filters_left'>"
             filter_html += filter_html_numeric
             filter_html += "</div>"
-
         if contains_other_filters:
             filter_html += "<div class='filters_right'>"
             filter_html += filter_html_bool
