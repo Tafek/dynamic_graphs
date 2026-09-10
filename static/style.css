@@ -107,19 +107,13 @@ h1 {
     max-width: 150px;
 }
 
-.graph_container_left {
-    border-color: #007deb;
-    border: solid;
-}
-
 .graph_container_right {
-    border-color: #007deb;
-    border: solid;
+    border: 2px solid #535353; /* Rahmen um den Inhaltsbereich */
+    border-radius: 5px;
+    padding: 5px
 }
 
 .graph_container_full {
-    border-color: #007deb;
-    border: solid;
     display: flex;
     flex-direction: row;
     margin: 0 auto;
