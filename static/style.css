@@ -136,16 +136,17 @@ h1 {
   display: none; /* Radiobuttons werden versteckt, sie sind nur für den Code wichtig */
 }
 
-.tabbox label {
-  display: inline-block;
-  padding: 10px 16px;
-  background: #ccc; /* normale Farbe der Tabs */
-  cursor: pointer; /* Maus zeigt, dass der Tab klickbar ist */
-  margin-right: 4px; /* Abstand zwischen den Tabs */
+
+.tabbox > label {
+    display: inline-block;
+    padding: 10px 16px;
+    background: #ccc;
+    cursor: pointer;
+    margin-right: 4px;
 }
 
-.tabbox label:hover {
-  background: #bbb; /* Farbe beim Darüberfahren mit der Maus */
+.tabbox > label:hover {
+    background: #bbb;
 }
 
 /* Aktiver Tab */
@@ -217,4 +218,63 @@ h1 {
 
 .range_inputs input:last-child {
     width: 185px;
+}
+
+input.styling_number {
+    width: 60px;
+}
+
+.graph_settings_form {
+    display: grid;
+    grid-template-columns: 150px 1fr;
+    gap: 8px 12px;
+    align-items: center;
+}
+
+.graph_settings_form label {
+    display: block;
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    cursor: default;
+    text-align: left;
+}
+
+.graph_settings_form input[type="text"],
+.graph_settings_form input[type="number"],
+.graph_settings_form select {
+    width: 100%;
+    max-width: 220px;
+}
+
+.graph_settings_form .checkbox_row {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.graph_settings_form .axis_range_row {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: 150px 1fr 150px 1fr;
+    gap: 8px 12px;
+    align-items: center;
+}
+
+.graph_settings_form .axis_range_row input {
+    width: 100%;
+    max-width: 220px;
+}
+
+.graph_settings_form input.settings_number {
+    width: 55px;
+    max-width: 55px;
+}
+
+.graph_settings_form input[name="styling_y_max"],
+.graph_settings_form input[name="styling_x_max"] {
+    width: 55px;
+    max-width: 55px;
+    margin-left: -65px;
 }

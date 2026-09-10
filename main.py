@@ -12,7 +12,7 @@ from functions.get_cols import (
 )
 from functions.get_data import get_data_dropdown
 from functions.get_filters import get_filters
-from functions.show_graph import display_head, show_graph
+from functions.show_graph import display_head, show_graph, show_graph_settings
 
 app = Flask(__name__)
 
@@ -30,8 +30,10 @@ def index():
     df_bool_filters = {}
     df_string_filters = {}
     df_datetime_filters = {}
+    settings = {}
 
     old_dataset = request.form.get("old_dataset")
+    old_visual_type = request.form.get("old_visual_type")
 
     if request.method == "POST":
 
@@ -106,11 +108,56 @@ def index():
                             df_datetime_filters[col] = {}
                         df_datetime_filters[col][filter_type] = value
 
+                    # Settings for Graph Styling
+                    if key == "styling_graph_style":
+                        settings["styling_graph_style"] = value
+
+                    elif key == "styling_title":
+                        settings["styling_title"] = value
+
+                    elif key == "styling_x_label":
+                        settings["styling_x_label"] = value
+
+                    elif key == "styling_y_label":
+                        settings["styling_y_label"] = value
+
+                    elif key == "styling_x_min":
+                        settings["styling_x_min"] = value
+
+                    elif key == "styling_x_max":
+                        settings["styling_x_max"] = value
+
+                    elif key == "styling_y_min":
+                        settings["styling_y_min"] = value
+
+                    elif key == "styling_y_max":
+                        settings["styling_y_max"] = value
+
+                    elif key == "styling_bins":
+                        settings["styling_bins"] = value
+
+                    elif key == "styling_x_ticks":
+                        settings["styling_x_ticks"] = value
+
+                    elif key == "styling_y_ticks":
+                        settings["styling_y_ticks"] = value
+
+                    elif key == "styling_x_tick_rotation":
+                        settings["styling_x_tick_rotation"] = value
+
+            settings["styling_grid"] = "styling_grid" in request.form
+            settings["styling_legend"] = "styling_legend" in request.form
+
             dataset_switched = False
+            if old_visual_type != visual_type:
+                visual_type_switched = True
+            else:
+                visual_type_switched = False
         else:
             columns_1 = []
             columns_2 = []
             dataset_switched = True
+            visual_type_switched = True
 
     # --------------------------------
     # Dataset / Columns / Head
@@ -172,14 +219,16 @@ def index():
                                             cols_1=columns_1,
                                             cols_2=columns_2,
                                             df=filtered_df,
-                                            method=request.form.get("aggregation"))
+                                            method=request.form.get("aggregation"),
+                                            settings=settings)
             generated_graph += "</div>"
-            #generated_graph += show_graph_settings( type=visual_type,
-            #                                        cols_1=columns_1,
-            #                                        cols_2=columns_2,
-            #                                        df=df)
-            generated_graph += '<div class="graph_container_right">Placeholder for further Visual Settings (Avg. etc.)</div>'
-        #generated_graph += '</div>'
+            generated_graph += show_graph_settings( type=visual_type,
+                                                    cols_1=columns_1,
+                                                    cols_2=columns_2,
+                                                    df=df,
+                                                    visual_type_switched=visual_type_switched,
+                                                    settings=settings)
+            
     else:
         generated_graph += "<p>Please select a dataset and a visualization type.</p></div>"
 
