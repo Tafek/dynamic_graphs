@@ -1,34 +1,173 @@
-Ich abuse diesen Part erstmal als eine Anleitung für mich, was ich tun will und was getan werden muss:
+# Dataset Visualizer
 
-Ich würde gerne einen Code schreiben, bei dam man ein beliebiges Dataset als CSV (ggf später auch mit DB-Input als Erweiterung?) an den Code übergeben kann.
-Dieser Code liest dann die Spalten Aus und bietet anhand derer dann die Möglichkeit:
-1. Sich verschiedene Visualisierungsstyles ausgeben zu lassen (Barchart, Scatter, Linegraph, Piechart)
-2. Sich verschiedene Spalten anzeigen zu lassen.
-3. Verschiedene Filter anzuwenden.
+A small web-based tool for exploring and visualizing datasets.
 
-Die Reihenfolge des Codes müsste also grob wie folgt sein:
-1. User gibt den Input in Form einer CSV (später ggf auch in Form einer DB die gequeried wird)
-    -> Das müsste vermutlich Codeseitig in CSV sein, wo man die Datei (und später Query + Credentials) an entsprechender Stelle ablegt.
-    -> Potentiell könnte man es natürlich auch über einen Upload/Input im Interface machen, aber da bin ich mir unsicher ob ich den Upload packe.
+The **Dataset Visualizer** allows users to load a CSV dataset, inspect its contents, filter the data, and create different types of visualizations without having to write plotting code themselves.
 
-2. Der Input müsste durch die erste Funktion laufen, die dem Interface die Spalten überreicht.
-    -> Gut wäre hier auch schon eine Bereinigung / Erkennung, was für Spalten vorliegen, auch wenn der Typus ggf nicht stimmt.
-        -> Spalten mit nur "Ja/Nein" ("Yes"/"No") sollten z.B. als Kategorisch behandelt werden. (Ebenso mit nur wenigen verschiedenen Strings), etc.
+The project was created as a learning project to practice working with **Python, Pandas, Flask, and Matplotlib** while building something that can be used to explore real datasets.
 
-3. Der Input der Funktion aus 2. fließt zurück ins Interface und bietet basierend darauf einen Spalten Selector. Der User kann entsprechend X verschiedene Spalten für seine Visualisierung aus- und abwählen.
+## Features
 
-4. Die Auswahl aus 3. (die auch einen Visualisierungstypen umfasst) muss zu einem Visual führen.
-    -> Via Switch Case (oder einer if-Schleife) wird nach Visualisierungstypen ausgewählt und basierend darauf die entsprechenden Spalten visualisiert.
-    -> Passend wäre hierbei noch filter zu erlauben, sodass ich z.B. nur bestimmte Werte Spalten auswählen kann, die Range des Datums bestimmen kann, etc.
-        -> Faktisch alles, was ich mir ggf. händisch anpassen wollen würde.
+### Dataset Overview
 
-5. Auch die Visualisierung soll ggf angepasst werden können. (Xlim/Ylim/Ticks/etc.)
-6. Fehlermeldungen / Warnhinweise sollten geworfen werden (z.B. mehrere Spalten in einem Pie-Chart.)
+* Load CSV datasets
+* Display the first 15 rows of the dataset in a table
+* Inspect columns and their detected data types
+* Automatically detect different types of data, including:
+  * Numeric values
+  * Categories (Everything up to 6 unique string values is considered a category here)
+  * Boolean values
+  * Dates
+  * Strings
+
+### Data Filtering
+
+The dataset can be filtered while creating a visualization.
+
+Available filters include:
+
+* **Numeric filters**
+
+  * Minimum and maximum values
+  * Range sliders
+  * Numeric input fields
+
+* **Categorical filters**
+
+  * Select individual categories using checkboxes
+
+* **Boolean filters**
+
+  * Filter `True` / `False` values
+
+* **Date filters**
+
+  * Filter data based on date ranges
+
+* **String filters**
+
+  * Filter text values using RegEx
+
+Filters are applied to the dataset everytime a change is being made.
+
+### Visualizations
+
+The project currently supports several visualization types:
+
+* Line plots
+* Scatter plots
+* Bar charts
+* Pie charts
+* Box plots
+* Histograms
+
+Depending on the selected visualization, additional settings can be configured.
+
+### Visualization Settings
+
+The visualization settings allow users to customize their graphs without directly interacting with Matplotlib code.
+
+Depending on the graph type, available options can include:
+
+* Columns used for the visualization
+* Graph style
+* Labels
+* Titles
+* X-Axis and Y-Axis limits and ticks
+* Other visualization-specific settings
+
+When switching to a different visualization type, incompatible settings are reset to prevent invalid configurations.
+
+## Technologies
+
+The project is built with:
+
+* **Python**
+* **Flask** – Web application framework
+* **Pandas** – Dataset handling and data manipulation
+* **Matplotlib** – Data visualization
+* **HTML / CSS** – User interface
+
+The project uses a virtual environment for managing its Python dependencies.
 
 
 
-Echte Readme, grob skiziiert:
+## Installation
 
-1. Installationsprozess Yadda-Yadda
-2. Im VSC-Terminal "uv run python main.py" ausführen.
-    -> Es gibt entsprechend einen Return à la "Running on http://127.0.0.1:5000" -> Diese IP über die URL-Zeile des Browsers aufrufen.
+This project uses [uv](https://docs.astral.sh/uv/) for Python project and dependency management.
+
+### 1. Clone the repository
+
+```bash
+git clone <repository-url>
+cd dynamic_graphs
+```
+
+### 2. Install the dependencies
+
+Make sure `uv` is installed, then run:
+
+```bash
+uv sync
+```
+
+This creates the virtual environment and installs the dependencies defined in `pyproject.toml`.
+
+### 3. Start the application
+
+Run the Flask application with:
+
+```bash
+uv run python main.py
+```
+
+The application will then be available at the local address shown by Flask, usually:
+
+```
+http://127.0.0.1:5000
+```
+
+Open the address in a web browser to use the Dataset Visualizer.
+
+### Running the project again
+
+Once the project has been set up, you can start it at any time with:
+
+```bash
+uv run python main.py
+```
+
+There is no need to manually activate the virtual environment when using `uv run`.
+
+
+## Using the Visualizer
+
+A typical workflow looks like this:
+
+1. Select a dataset.
+2. Select a visualization type.
+3. Inspect and select the available and desired columns.
+4. Apply filters if necessary.
+5. Adjust the visualization settings.
+6. Inspect the resulting graph.
+
+The goal is to make basic data exploration possible without requiring the user to manually write Pandas or Matplotlib code.
+
+
+## Current Status
+
+This project is still under development.
+
+The main functionality for loading, filtering, and visualizing datasets is implemented, but additional features and improvements may be added over time.
+
+Possible future improvements include:
+
+* More visualization types
+* More customization options
+* Improved error handling
+* Better dataset management
+* Additional filtering options
+* Exporting generated visualizations
+* Improved UI and usability
+* Improved performance on huge datasets
+* Option to handle Database Tables

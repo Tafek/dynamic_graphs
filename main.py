@@ -197,7 +197,7 @@ def index():
     tab_box = f"<div class='tabbox'> \
                 <!-- Tabs --> \
                 <input type='radio' name='tabs' id='tab1' value='table' {'checked' if active_tab == 'table' else ''}> \
-                <label for='tab1'>Show first 15 table rows</label> \
+                <label for='tab1'>Show first 15 table rows (unfiltered)</label> \
                 <input type='radio' name='tabs' id='tab2' value='graph' {'checked' if active_tab == 'graph' else ''}> \
                 <label for='tab2'>Show Graph and Options</label>\
                 <!-- Inhalte -->"
