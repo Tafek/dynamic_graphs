@@ -144,12 +144,13 @@ There is no need to manually activate the virtual environment when using `uv run
 
 A typical workflow looks like this:
 
-1. Select a dataset.
-2. Select a visualization type.
-3. Inspect and select the available and desired columns.
-4. Apply filters if necessary.
-5. Adjust the visualization settings.
-6. Inspect the resulting graph.
+1. Add .csv-File(s) to the data folder
+2. Select a dataset.
+3. Select a visualization type.
+4. Inspect and select the available and desired columns.
+5. Apply filters if necessary.
+6. Adjust the visualization settings.
+7. Inspect the resulting graph.
 
 The goal is to make basic data exploration possible without requiring the user to manually write Pandas or Matplotlib code.
 

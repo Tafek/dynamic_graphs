@@ -1,0 +1,21 @@
+Name,Age,Weight,Color,Breed,Indoor,Favorite_Food,Adoption_Date
+Luna,3,4.2,Black,Maine Coon,true,Chicken,2022-04-12
+Milo,5,5.1,Orange,Domestic Shorthair,true,Tuna,2020-08-23
+Nala,2,3.8,White,Siamese,false,Salmon,2023-01-15
+Oliver,7,6.3,Gray,British Shorthair,true,Chicken,2019-06-04
+Bella,4,4.7,Calico,Domestic Shorthair,true,Tuna,2021-11-19
+Simba,1,3.2,Orange,Bengal,false,Salmon,2024-02-28
+Cleo,6,4.9,Black,Bombay,true,Chicken,2020-03-11
+Charlie,8,5.8,Gray,Russian Blue,true,Tuna,2018-09-30
+Mia,3,3.9,White,Ragdoll,true,Chicken,2022-07-07
+Leo,10,6.7,Orange,Maine Coon,true,Salmon,2016-05-21
+Daisy,2,3.5,Gray,Scottish Fold,true,Tuna,2023-04-17
+Oscar,5,5.4,Black,Domestic Shorthair,false,Chicken,2021-01-09
+Lily,4,4.1,Calico,Ragdoll,true,Salmon,2022-10-25
+Toby,9,6.0,White,Persian,true,Tuna,2017-12-03
+Sophie,1,3.0,Black,Siamese,false,Chicken,2024-05-14
+Max,6,5.6,Orange,Bengal,false,Salmon,2020-11-08
+Nina,3,4.4,Gray,Norwegian Forest,true,Tuna,2022-02-16
+Felix,7,5.2,White,British Shorthair,true,Chicken,2019-10-12
+Ruby,2,3.7,Calico,Domestic Shorthair,false,Salmon,2023-08-05
+Archie,11,7.1,Black,Maine Coon,true,Tuna,2015-06-29
